@@ -138,3 +138,59 @@
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
                             :title (str "sawtooth-beat with phase " phase))]
     (view plot)))
+
+(defn graph-triangle
+  "Draw a graph of an oscillated parameter based on a triangle oscillator"
+  [& {:keys [interval] :or {interval :beat}}]
+  (let [metro (:metronome a-show)
+        osc-fn (case interval
+                 :beat afterglow.effects.oscillators/triangle-beat
+                 :bar afterglow.effects.oscillators/triangle-bar
+                 :phrase afterglow.effects.oscillators/triangle-phrase)
+        osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        max-beat (if (= interval :phrase) 64 4)
+        plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
+                            :title (str "default triangle-" (name interval)))]
+    (view plot)))
+
+(defn graph-square
+  "Draw a graph of an oscillated parameter based on a square wave oscillator"
+  [& {:keys [interval] :or {interval :beat}}]
+  (let [metro (:metronome a-show)
+        osc-fn (case interval
+                 :beat afterglow.effects.oscillators/square-beat
+                 :bar afterglow.effects.oscillators/square-bar
+                 :phrase afterglow.effects.oscillators/square-phrase)
+        osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        max-beat (if (= interval :phrase) 64 4)
+        plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
+                            :title (str "default square-" (name interval)))]
+    (view plot)))
+
+(defn graph-square-width
+  "Draw a graph of an oscillated parameter based on a square oscillator with a width"
+  [width]
+  (let [metro (:metronome a-show)
+        osc-param (with-show a-show (params/build-oscillated-param
+                                     (afterglow.effects.oscillators/square-beat :width width) :max 1))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
+                            :title (str "square-beat with width " width))]
+    (view plot)))
+
+(defn graph-sine
+  "Draw a graph of an oscillated parameter based on a sine wave oscillator"
+  [& {:keys [interval] :or {interval :beat}}]
+  (let [metro (:metronome a-show)
+        osc-fn (case interval
+                 :beat afterglow.effects.oscillators/sine-beat
+                 :bar afterglow.effects.oscillators/sine-bar
+                 :phrase afterglow.effects.oscillators/sine-phrase)
+        osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        max-beat (if (= interval :phrase) 64 4)
+        plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
+                            :title (str "default sine-" (name interval)))]
+    (view plot)))
