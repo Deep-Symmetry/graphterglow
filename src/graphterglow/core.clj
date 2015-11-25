@@ -66,7 +66,7 @@
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
                             :title (str "fade-fraction " fraction))]
     (view plot)
-    ;;(save-svg plot "/Users/jim/Desktop/plot-fraction-0-5.svg")
+    ;;(save-svg plot "/Users/james/Desktop/plot-fraction-0-5.svg")
     ))
 
 (defn graph-sine-fade
@@ -89,4 +89,52 @@
         f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x)))
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
                             :title (str "sine fade-fraction " fraction))]
+    (view plot)))
+
+(defn graph-sawtooth
+  "Draw a graph of an oscillated parameter based on a sawtooth oscillator"
+  [& {:keys [interval] :or {interval :beat}}]
+  (let [metro (:metronome a-show)
+        osc-fn (case interval
+                 :beat afterglow.effects.oscillators/sawtooth-beat
+                 :bar afterglow.effects.oscillators/sawtooth-bar
+                 :phrase afterglow.effects.oscillators/sawtooth-phrase)
+        osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        max-beat (if (= interval :phrase) 64 4)
+        plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
+                            :title (str "default sawtooth-" (name interval)))]
+    (view plot)))
+
+(defn graph-sawtooth-down
+  "Draw a graph of an oscillated parameter based on a sawtooth oscillator in down mode"
+  []
+  (let [metro (:metronome a-show)
+        osc-param (with-show a-show (params/build-oscillated-param
+                                     (afterglow.effects.oscillators/sawtooth-beat :down? true) :max 1))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
+                            :title "downward sawtooth-beat")]
+    (view plot)))
+
+(defn graph-sawtooth-ratio
+  "Draw a graph of an oscillated parameter based on a sawtooth oscillator with a beat ration"
+  [r]
+  (let [metro (:metronome a-show)
+        osc-param (with-show a-show (params/build-oscillated-param
+                                     (afterglow.effects.oscillators/sawtooth-beat :beat-ratio r) :max 1))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
+                            :title (str "sawtooth-beat with beat-ratio " r))]
+    (view plot)))
+
+(defn graph-sawtooth-phase
+  "Draw a graph of an oscillated parameter based on a sawtooth oscillator with a phase"
+  [phase]
+  (let [metro (:metronome a-show)
+        osc-param (with-show a-show (params/build-oscillated-param
+                                     (afterglow.effects.oscillators/sawtooth-beat :phase phase) :max 1))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
+                            :title (str "sawtooth-beat with phase " phase))]
     (view plot)))
