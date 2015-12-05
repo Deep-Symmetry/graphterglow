@@ -206,11 +206,11 @@
   []
   (with-show a-show
     (let [metro (:metronome a-show)
-          position-parm (params/build-oscillated-param (osc/square-beat :phase 0.5) :min 1 :max 2)
+          position-parm (params/build-oscillated-param (osc/square-beat) :min 1 :max 2)
           saw-param (params/build-oscillated-param (osc/sawtooth-beat :beat-ratio (/ 2)))
           chase (fx/chase "Gap Saw"
-                          [(afterglow.effects.dimmer/dimmer-effect saw-param (show/all-fixtures))
-                           (fx/blank)]
+                          [(fx/blank)
+                           (afterglow.effects.dimmer/dimmer-effect saw-param (show/all-fixtures))]
                           position-parm)
           f (fn [x] (let [snapshot (build-beat-snapshot metro x)
                           assigners (fx/generate chase a-show snapshot)]
