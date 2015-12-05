@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [afterglow "0.1.5-SNAPSHOT"]
+                 [afterglow "0.1.6-SNAPSHOT"]
                  [incanter "1.9.0"]]
   :profiles {:dev {:repl-options {:init-ns graphterglow.core
                                   :welcome (println "Graph test environment loaded.")}

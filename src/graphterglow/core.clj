@@ -1,6 +1,7 @@
 (ns graphterglow.core
   (:require [afterglow.effects :as fx]
             [afterglow.effects.params :as params]
+            [afterglow.effects.oscillators :as osc]
             [afterglow.show :as show]
             [afterglow.show-context :refer [with-show]]
             [afterglow.rhythm :as rhythm]
@@ -14,6 +15,8 @@
   (:import [afterglow.rhythm MetronomeSnapshot]))
 
 (def a-show (show/show))
+(with-show a-show
+  (show/patch-fixture! :dimmer (afterglow.fixtures/generic-dimmmer) 1 1))
 
 (defn build-test-snapshot
   "Creates a metronome snapshot representing the specified number of
@@ -96,9 +99,9 @@
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
         osc-fn (case interval
-                 :beat afterglow.effects.oscillators/sawtooth-beat
-                 :bar afterglow.effects.oscillators/sawtooth-bar
-                 :phrase afterglow.effects.oscillators/sawtooth-phrase)
+                 :beat osc/sawtooth-beat
+                 :bar osc/sawtooth-bar
+                 :phrase osc/sawtooth-phrase)
         osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         max-beat (if (= interval :phrase) 64 4)
@@ -111,7 +114,7 @@
   []
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (params/build-oscillated-param
-                                     (afterglow.effects.oscillators/sawtooth-beat :down? true) :max 1))
+                                     (osc/sawtooth-beat :down? true) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
                             :title "downward sawtooth-beat")]
@@ -122,7 +125,7 @@
   [r]
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (params/build-oscillated-param
-                                     (afterglow.effects.oscillators/sawtooth-beat :beat-ratio r) :max 1))
+                                     (osc/sawtooth-beat :beat-ratio r) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
                             :title (str "sawtooth-beat with beat-ratio " r))]
@@ -133,7 +136,7 @@
   [phase]
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (params/build-oscillated-param
-                                     (afterglow.effects.oscillators/sawtooth-beat :phase phase) :max 1))
+                                     (osc/sawtooth-beat :phase phase) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
                             :title (str "sawtooth-beat with phase " phase))]
@@ -144,9 +147,9 @@
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
         osc-fn (case interval
-                 :beat afterglow.effects.oscillators/triangle-beat
-                 :bar afterglow.effects.oscillators/triangle-bar
-                 :phrase afterglow.effects.oscillators/triangle-phrase)
+                 :beat osc/triangle-beat
+                 :bar osc/triangle-bar
+                 :phrase osc/triangle-phrase)
         osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         max-beat (if (= interval :phrase) 64 4)
@@ -159,9 +162,9 @@
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
         osc-fn (case interval
-                 :beat afterglow.effects.oscillators/square-beat
-                 :bar afterglow.effects.oscillators/square-bar
-                 :phrase afterglow.effects.oscillators/square-phrase)
+                 :beat osc/square-beat
+                 :bar osc/square-bar
+                 :phrase osc/square-phrase)
         osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         max-beat (if (= interval :phrase) 64 4)
@@ -174,7 +177,7 @@
   [width]
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (params/build-oscillated-param
-                                     (afterglow.effects.oscillators/square-beat :width width) :max 1))
+                                     (osc/square-beat :width width) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
                             :title (str "square-beat with width " width))]
@@ -185,12 +188,35 @@
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
         osc-fn (case interval
-                 :beat afterglow.effects.oscillators/sine-beat
-                 :bar afterglow.effects.oscillators/sine-bar
-                 :phrase afterglow.effects.oscillators/sine-phrase)
+                 :beat osc/sine-beat
+                 :bar osc/sine-bar
+                 :phrase osc/sine-phrase)
         osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         max-beat (if (= interval :phrase) 64 4)
         plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
                             :title (str "default sine-" (name interval)))]
     (view plot)))
+
+(defn graph-skip-sawtooth
+  "Draw a graph of a chase which skips every other instance of a
+  double-time sawtooth beat oscillator, as an example of how to
+  compose oscillators with chases; a square wave oscillator is used to
+  pick between the chase elements."
+  []
+  (with-show a-show
+    (let [metro (:metronome a-show)
+          position-parm (params/build-oscillated-param (osc/square-beat :phase 0.5) :min 1 :max 2)
+          saw-param (params/build-oscillated-param (osc/sawtooth-beat :beat-ratio (/ 2)))
+          chase (fx/chase "Gap Saw"
+                          [(afterglow.effects.dimmer/dimmer-effect saw-param (show/all-fixtures))
+                           (fx/blank)]
+                          position-parm)
+          f (fn [x] (let [snapshot (build-beat-snapshot metro x)
+                          assigners (fx/generate chase a-show snapshot)]
+                      (if-let [assigner (first assigners)]
+                        (params/resolve-param (fx/assign assigner a-show snapshot nil nil) a-show snapshot)
+                        0)))
+          plot (function-plot f 0 4 :x-label "beat" :y-label "dimmer value"
+                              :title "Chase including every other sawtooth wave")]
+      (view plot))))
