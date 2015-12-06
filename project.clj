@@ -10,4 +10,4 @@
                                   :welcome (println "Graph test environment loaded.")}
                    :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]}}
 
-  :plugins [[lein-ancient "0.6.7"]])
+  :plugins [[lein-ancient "0.6.8"]])
