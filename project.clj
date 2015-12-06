@@ -8,6 +8,4 @@
                  [incanter "1.9.0"]]
   :profiles {:dev {:repl-options {:init-ns graphterglow.core
                                   :welcome (println "Graph test environment loaded.")}
-                   :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]}}
-
-  :plugins [[lein-ancient "0.6.8"]])
+                   :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]}})
