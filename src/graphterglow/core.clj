@@ -98,104 +98,96 @@
   "Draw a graph of an oscillated parameter based on a sawtooth oscillator"
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
-        osc-fn (case interval
-                 :beat osc/sawtooth-beat
-                 :bar osc/sawtooth-bar
-                 :phrase osc/sawtooth-phrase)
-        osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
+        osc-param (with-show a-show (osc/build-oscillated-param (osc/sawtooth :interval interval) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         max-beat (if (= interval :phrase) 64 4)
         plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
-                            :title (str "default sawtooth-" (name interval)))]
+                            :title (if (= interval :beat)
+                                     "default sawtooth"
+                                     (str "sawtooth with :interval " interval)))]
     (view plot)))
 
 (defn graph-sawtooth-down
   "Draw a graph of an oscillated parameter based on a sawtooth oscillator in down mode"
   []
   (let [metro (:metronome a-show)
-        osc-param (with-show a-show (params/build-oscillated-param
-                                     (osc/sawtooth-beat :down? true) :max 1))
+        osc-param (with-show a-show (osc/build-oscillated-param
+                                     (osc/sawtooth :down? true) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
-                            :title "downward sawtooth-beat")]
+                            :title "downward sawtooth")]
     (view plot)))
 
 (defn graph-sawtooth-ratio
   "Draw a graph of an oscillated parameter based on a sawtooth oscillator with a beat ration"
   [r]
   (let [metro (:metronome a-show)
-        osc-param (with-show a-show (params/build-oscillated-param
-                                     (osc/sawtooth-beat :beat-ratio r) :max 1))
+        osc-param (with-show a-show (osc/build-oscillated-param
+                                     (osc/sawtooth :interval-ratio r) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
-                            :title (str "sawtooth-beat with beat-ratio " r))]
+                            :title (str "sawtooth with :interval-ratio " r))]
     (view plot)))
 
 (defn graph-sawtooth-phase
   "Draw a graph of an oscillated parameter based on a sawtooth oscillator with a phase"
   [phase]
   (let [metro (:metronome a-show)
-        osc-param (with-show a-show (params/build-oscillated-param
-                                     (osc/sawtooth-beat :phase phase) :max 1))
+        osc-param (with-show a-show (osc/build-oscillated-param
+                                     (osc/sawtooth :phase phase) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
-                            :title (str "sawtooth-beat with phase " phase))]
+                            :title (str "sawtooth with :phase " phase))]
     (view plot)))
 
 (defn graph-triangle
   "Draw a graph of an oscillated parameter based on a triangle oscillator"
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
-        osc-fn (case interval
-                 :beat osc/triangle-beat
-                 :bar osc/triangle-bar
-                 :phrase osc/triangle-phrase)
-        osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
+        osc-param (with-show a-show (osc/build-oscillated-param (osc/triangle :interval interval) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         max-beat (if (= interval :phrase) 64 4)
         plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
-                            :title (str "default triangle-" (name interval)))]
+                            :title (if (= interval :beat)
+                                     "default triangle"
+                                     (str "triangle with :interval " interval)))]
     (view plot)))
 
 (defn graph-square
   "Draw a graph of an oscillated parameter based on a square wave oscillator"
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
-        osc-fn (case interval
-                 :beat osc/square-beat
-                 :bar osc/square-bar
-                 :phrase osc/square-phrase)
-        osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
+        osc-param (with-show a-show (osc/build-oscillated-param (osc/square :interval interval) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         max-beat (if (= interval :phrase) 64 4)
         plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
-                            :title (str "default square-" (name interval)))]
+                            :title (if (= interval :beat)
+                                     "default square"
+                                     (str "square with :interval " interval)))]
     (view plot)))
 
 (defn graph-square-width
   "Draw a graph of an oscillated parameter based on a square oscillator with a width"
   [width]
   (let [metro (:metronome a-show)
-        osc-param (with-show a-show (params/build-oscillated-param
-                                     (osc/square-beat :width width) :max 1))
+        osc-param (with-show a-show (osc/build-oscillated-param
+                                     (osc/square :width width) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
-                            :title (str "square-beat with width " width))]
+                            :title (str "square with width " width))]
     (view plot)))
 
 (defn graph-sine
   "Draw a graph of an oscillated parameter based on a sine wave oscillator"
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
-        osc-fn (case interval
-                 :beat osc/sine-beat
-                 :bar osc/sine-bar
-                 :phrase osc/sine-phrase)
-        osc-param (with-show a-show (params/build-oscillated-param (osc-fn) :max 1))
+        osc-param (with-show a-show (osc/build-oscillated-param (osc/sine :interval interval) :max 1))
         f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
         max-beat (if (= interval :phrase) 64 4)
         plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
-                            :title (str "default sine-" (name interval)))]
+                            :title (if (= interval :beat)
+                                     "default sine"
+                                     (str "sine with :interval " interval)))]
     (view plot)))
 
 (defn graph-skip-sawtooth
@@ -206,8 +198,8 @@
   []
   (with-show a-show
     (let [metro (:metronome a-show)
-          position-param (params/build-oscillated-param (osc/square-beat) :min 1 :max 2)
-          saw-param (params/build-oscillated-param (osc/sawtooth-beat :beat-ratio (/ 2)))
+          position-param (osc/build-oscillated-param (osc/square) :min 1 :max 2)
+          saw-param (osc/build-oscillated-param (osc/sawtooth :beat-ratio (/ 2)))
           chase (fx/chase "Gap Saw"
                           [(fx/blank)
                            (afterglow.effects.dimmer/dimmer-effect saw-param (show/all-fixtures))]

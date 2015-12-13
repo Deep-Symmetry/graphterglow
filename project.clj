@@ -3,7 +3,7 @@
   :url "https://github.com/brunchboy/graphterglow"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.8.0-RC3"]
                  [afterglow "0.1.6-SNAPSHOT"]
                  [incanter "1.9.0"]]
   :profiles {:dev {:repl-options {:init-ns graphterglow.core
