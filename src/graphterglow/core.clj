@@ -45,7 +45,7 @@
   []
   (let [metro (:metronome a-show)
         basic-step (params/build-step-param :starting (build-beat-snapshot metro 1))
-        f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
                             :title "fade-fraction 0 (default)")]
     (view plot)))
@@ -55,7 +55,7 @@
   []
   (let [metro (:metronome a-show)
         basic-step (params/build-step-param :fade-fraction 1 :starting (build-beat-snapshot metro 1))
-        f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
                             :title "fade-fraction 1 (maximum)")]
     (view plot)))
@@ -65,7 +65,7 @@
   [fraction]
   (let [metro (:metronome a-show)
         basic-step (params/build-step-param :fade-fraction fraction :starting (build-beat-snapshot metro 1))
-        f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
                             :title (str "fade-fraction " fraction))]
     (view plot)
@@ -78,7 +78,7 @@
   (let [metro (:metronome a-show)
         basic-step (params/build-step-param :fade-fraction 1 :fade-curve :sine
                                             :starting (build-beat-snapshot metro 1))
-        f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
                             :title "sine fade-fraction 1 (maximum)")]
     (view plot)))
@@ -89,7 +89,7 @@
   (let [metro (:metronome a-show)
         basic-step (params/build-step-param :fade-fraction fraction :fade-curve :sine
                                             :starting (build-beat-snapshot metro 1))
-        f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
                             :title (str "sine fade-fraction " fraction))]
     (view plot)))
@@ -99,7 +99,7 @@
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (osc/build-oscillated-param (osc/sawtooth :interval interval) :max 1))
-        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x) nil))
         max-beat (if (= interval :phrase) 64 4)
         plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
                             :title (if (= interval :beat)
@@ -113,7 +113,7 @@
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (osc/build-oscillated-param
                                      (osc/sawtooth :down? true) :max 1))
-        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
                             :title "downward sawtooth")]
     (view plot)))
@@ -124,7 +124,7 @@
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (osc/build-oscillated-param
                                      (osc/sawtooth :interval-ratio r) :max 1))
-        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
                             :title (str "sawtooth with :interval-ratio " r))]
     (view plot)))
@@ -135,7 +135,7 @@
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (osc/build-oscillated-param
                                      (osc/sawtooth :phase phase) :max 1))
-        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
                             :title (str "sawtooth with :phase " phase))]
     (view plot)))
@@ -145,7 +145,7 @@
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (osc/build-oscillated-param (osc/triangle :interval interval) :max 1))
-        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x) nil))
         max-beat (if (= interval :phrase) 64 4)
         plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
                             :title (if (= interval :beat)
@@ -158,7 +158,7 @@
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (osc/build-oscillated-param (osc/square :interval interval) :max 1))
-        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x) nil))
         max-beat (if (= interval :phrase) 64 4)
         plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
                             :title (if (= interval :beat)
@@ -172,7 +172,7 @@
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (osc/build-oscillated-param
                                      (osc/square :width width) :max 1))
-        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat" :y-label "oscillator value"
                             :title (str "square with width " width))]
     (view plot)))
@@ -182,7 +182,7 @@
   [& {:keys [interval] :or {interval :beat}}]
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (osc/build-oscillated-param (osc/sine :interval interval) :max 1))
-        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x)))
+        f (fn [x] (params/evaluate osc-param a-show (build-beat-snapshot metro x) nil))
         max-beat (if (= interval :phrase) 64 4)
         plot (function-plot f 0 max-beat :x-label "beat" :y-label "oscillator value"
                             :title (if (= interval :beat)
