@@ -22,17 +22,7 @@
   "Creates a metronome snapshot representing the specified number of
   milliseconds after the supplied metronome was started."
   [metro offset]
-  (let [snap (rhythm/metro-snapshot metro)
-        start (:start snap)
-        instant (+ start offset)
-        beat (rhythm/marker-number instant start (rhythm/metro-tick metro))
-        bar (rhythm/marker-number instant start (rhythm/metro-tock metro))
-        phrase (rhythm/marker-number instant start (rhythm/metro-ding metro))
-        beat-phase (rhythm/marker-phase instant start (rhythm/metro-tick metro))
-        bar-phase (rhythm/marker-phase instant start (rhythm/metro-tock metro))
-        phrase-phase (rhythm/marker-phase instant start (rhythm/metro-ding metro))]
-    (MetronomeSnapshot. start (:bpm snap) (:bpb snap) (:bpp snap)
-                        instant beat bar phrase beat-phase bar-phase phrase-phase)))
+  (rhythm/metro-snapshot metro (+ (rhythm/metro-start metro) offset)))
 
 (defn build-beat-snapshot
   "Create a snapshot that represents the specified number of beats after
