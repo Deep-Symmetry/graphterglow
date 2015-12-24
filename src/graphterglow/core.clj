@@ -20,7 +20,7 @@
 
 (defn build-test-snapshot
   "Creates a metronome snapshot representing the specified number of
-  milliseconds after the supplied metrome was started."
+  milliseconds after the supplied metronome was started."
   [metro offset]
   (let [snap (rhythm/metro-snapshot metro)
         start (:start snap)
