@@ -32,9 +32,10 @@
 
 (defn graph-step
   "Draw a graph of a step parameter"
-  []
+  [& {:keys [interval interval-ratio] :or {interval :beat interval-ratio 1}}]
   (let [metro (:metronome a-show)
-        basic-step (params/build-step-param :starting (build-beat-snapshot metro 1))
+        basic-step (params/build-step-param :interval interval :interval-ratio interval-ratio
+                                            :starting (build-beat-snapshot metro 1))
         f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
                             :title "fade-fraction 0 (default)")]
@@ -42,9 +43,10 @@
 
 (defn graph-fade
   "Draw a graph of a step parameter with maximum fade-fraction"
-  []
+  [& {:keys [interval interval-ratio] :or {interval :beat interval-ratio 1}}]
   (let [metro (:metronome a-show)
-        basic-step (params/build-step-param :fade-fraction 1 :starting (build-beat-snapshot metro 1))
+        basic-step (params/build-step-param :interval interval :interval-ratio interval-ratio
+                                            :fade-fraction 1 :starting (build-beat-snapshot metro 1))
         f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
                             :title "fade-fraction 1 (maximum)")]
@@ -52,9 +54,10 @@
 
 (defn graph-fraction
   "Draw a graph of a step parameter with specified fade-fraction"
-  [fraction]
+  [fraction & {:keys [interval interval-ratio] :or {interval :beat interval-ratio 1}}]
   (let [metro (:metronome a-show)
-        basic-step (params/build-step-param :fade-fraction fraction :starting (build-beat-snapshot metro 1))
+        basic-step (params/build-step-param :interval interval :interval-ratio interval-ratio
+                                            :fade-fraction fraction :starting (build-beat-snapshot metro 1))
         f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
                             :title (str "fade-fraction " fraction))]
@@ -64,9 +67,10 @@
 
 (defn graph-sine-fade
   "Draw a graph of a step parameter with sine fade curve and maximum fade-fraction"
-  []
+  [& {:keys [interval interval-ratio] :or {interval :beat interval-ratio 1}}]
   (let [metro (:metronome a-show)
-        basic-step (params/build-step-param :fade-fraction 1 :fade-curve :sine
+        basic-step (params/build-step-param :interval interval :interval-ratio interval-ratio
+                                            :fade-fraction 1 :fade-curve :sine
                                             :starting (build-beat-snapshot metro 1))
         f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
@@ -75,9 +79,10 @@
 
 (defn graph-sine-fraction
   "Draw a graph of a step parameter with sine fade curve and specified fade-fraction"
-  [fraction]
+  [fraction & {:keys [interval interval-ratio] :or {interval :beat interval-ratio 1}}]
   (let [metro (:metronome a-show)
-        basic-step (params/build-step-param :fade-fraction fraction :fade-curve :sine
+        basic-step (params/build-step-param :interval interval :interval-ratio interval-ratio
+                                            :fade-fraction fraction :fade-curve :sine
                                             :starting (build-beat-snapshot metro 1))
         f (fn [x] (params/evaluate basic-step a-show (build-beat-snapshot metro x) nil))
         plot (function-plot f 0 4 :x-label "beat (1 is closest to start point)" :y-label "step param"
@@ -109,7 +114,7 @@
     (view plot)))
 
 (defn graph-sawtooth-ratio
-  "Draw a graph of an oscillated parameter based on a sawtooth oscillator with a beat ration"
+  "Draw a graph of an oscillated parameter based on a sawtooth oscillator with a beat ratio"
   [r]
   (let [metro (:metronome a-show)
         osc-param (with-show a-show (osc/build-oscillated-param
